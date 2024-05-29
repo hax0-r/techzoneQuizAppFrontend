@@ -7,18 +7,21 @@ const Quiz = () => {
     const { setQuizResult } = useContext(QuizContext);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedOptions, setSelectedOptions] = useState({});
+    const [timeLeft, setTimeLeft] = useState(15); // Timer state
     const questionData = QUESTIONS[currentQuestionIndex];
     const navigate = useNavigate();
 
     const onPrev = () => {
         if (currentQuestionIndex > 0) {
             setCurrentQuestionIndex(currentQuestionIndex - 1);
+            setTimeLeft(15); // Reset timer
         }
     };
 
     const onNext = () => {
         if (currentQuestionIndex < QUESTIONS.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
+            setTimeLeft(15); // Reset timer
         } else {
             calculateMarks();
         }
@@ -48,8 +51,27 @@ const Quiz = () => {
     };
 
     useEffect(() => {
+        const timer = setTimeout(() => {
+            if (timeLeft > 0) {
+                setTimeLeft(timeLeft - 1);
+            } else {
+                onNext();
+            }
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [timeLeft]);
+
+    useEffect(() => {
+        setTimeLeft(15); // Reset timer on question change
         console.log(questionData);
     }, [currentQuestionIndex]);
+
+    const getTimerColor = () => {
+        if (timeLeft > 10) return 'bg-green-600';
+        if (timeLeft > 4) return 'bg-yellow-500';
+        return 'bg-red-600';
+    };
 
     return (
         <>
@@ -58,8 +80,13 @@ const Quiz = () => {
                     <h1 className='text-blue pb-5 text-center'>Quiz Application</h1>
 
                     <div>
-                        <h2 className="pt-6 pb-4 text-sm text-zinc-400">Question No {questionData.id}</h2>
-                        <h2 className='font-medium text-xl pb-7'>{questionData.question}</h2>
+                        <div className="flex justify-between items-center">
+                            <div className="">
+                                <h2 className="pt-6 pb-4 text-sm text-zinc-400">{questionData.id} of {QUESTIONS.length} question</h2>
+                                <h2 className='font-medium max-w-[40rem] w-full text-xl pb-7'>{questionData.question}</h2>
+                            </div>
+                            <div className={`bg-zinc-200 p-3 w-14 h-14 opacity-80 text-white transition-all duration-200 rounded-full flex justify-center items-center text-center ${getTimerColor()}`}> {timeLeft}s</div>
+                        </div>
                         <ul>
                             {questionData.options.map((opti, index) => (
                                 <li className='py-2 flex gap-2' key={index}>
