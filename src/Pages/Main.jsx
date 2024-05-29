@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MainContext } from '../Context/MainContext';
+import { errorNotify } from '../Components/Toastify';
 
 const Main = () => {
     const navigate = useNavigate();
@@ -8,7 +9,7 @@ const Main = () => {
 
     const startNowHandler = () => {
         if (!userName || !idNumber) {
-            alert("Required fields are missing");
+            errorNotify("Enter Name and Id")
             return;
         }
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../Style/Login.css';
 import { useNavigate } from 'react-router-dom';
+import { errorNotify, successNotify } from './Toastify';
 
 const Login = ({ isLogin, setIsLogin }) => {
 
@@ -10,8 +11,14 @@ const Login = ({ isLogin, setIsLogin }) => {
 
     const openLogin = (e) => {
         e.preventDefault();
-        if (getLoginPassword === '123') {
+
+        if (!getLoginPassword) {
+            errorNotify("Enter Password")
+        } else if (getLoginPassword === '123') {
             navigate('/studentstable');
+            successNotify("Welcome to Student Table")
+        } else {
+            errorNotify("password is incorrect")
         }
         setIsLogin(!isLogin)
     };
