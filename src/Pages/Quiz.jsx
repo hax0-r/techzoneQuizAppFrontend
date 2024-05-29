@@ -2,26 +2,27 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QUESTIONS from '../Data/QUESTIONS';
 import { QuizContext } from '../Context/QuizContext';
+import { motion } from 'framer-motion';
+
+const QUIZ_DURATION = 120;
 
 const Quiz = () => {
     const { setQuizResult } = useContext(QuizContext);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedOptions, setSelectedOptions] = useState({});
-    const [timeLeft, setTimeLeft] = useState(15); // Timer state
+    const [timeLeft, setTimeLeft] = useState(QUIZ_DURATION);
     const questionData = QUESTIONS[currentQuestionIndex];
     const navigate = useNavigate();
 
     const onPrev = () => {
         if (currentQuestionIndex > 0) {
             setCurrentQuestionIndex(currentQuestionIndex - 1);
-            setTimeLeft(15); // Reset timer
         }
     };
 
     const onNext = () => {
         if (currentQuestionIndex < QUESTIONS.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
-            setTimeLeft(15); // Reset timer
         } else {
             calculateMarks();
         }
@@ -51,11 +52,13 @@ const Quiz = () => {
     };
 
     useEffect(() => {
+        if (timeLeft === 0) {
+            calculateMarks();
+        }
+
         const timer = setTimeout(() => {
             if (timeLeft > 0) {
                 setTimeLeft(timeLeft - 1);
-            } else {
-                onNext();
             }
         }, 1000);
 
@@ -63,18 +66,24 @@ const Quiz = () => {
     }, [timeLeft]);
 
     useEffect(() => {
-        setTimeLeft(15); // Reset timer on question change
-        console.log(questionData);
     }, [currentQuestionIndex]);
 
-    const getTimerColor = () => {
-        if (timeLeft > 10) return 'bg-green-600';
-        if (timeLeft > 4) return 'bg-yellow-500';
-        return 'bg-red-600';
-    };
+    const progress = (QUIZ_DURATION - timeLeft) / QUIZ_DURATION * 100;
 
     return (
         <>
+            <motion.div
+                className='bg-blue transition-all duration-200'
+                style={{
+                    width: `${progress}%`,
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    height: 4,
+                    transformOrigin: "0%"
+                }}
+                transition={{ duration: 1 }}
+            />
             <div className="select-none max-w-[55rem] m-auto">
                 <div className="">
                     <h1 className='text-blue pb-5 text-center'>Quiz Application</h1>
@@ -85,7 +94,9 @@ const Quiz = () => {
                                 <h2 className="pt-6 pb-4 text-sm text-zinc-400">{questionData.id} of {QUESTIONS.length} question</h2>
                                 <h2 className='font-medium max-w-[40rem] w-full text-xl pb-7'>{questionData.question}</h2>
                             </div>
-                            <div className={`bg-zinc-200 p-3 w-14 h-14 opacity-80 text-white transition-all duration-200 rounded-full flex justify-center items-center text-center ${getTimerColor()}`}> {timeLeft}s</div>
+                            <div className={`p-4 rounded-full text-center ${timeLeft <= 10 ? 'bg-red-200' : 'bg-zinc-200'}`}>
+                                {`${Math.floor(timeLeft / 60)}:${timeLeft % 60 < 10 ? '0' : ''}${timeLeft % 60}`}s
+                            </div>
                         </div>
                         <ul>
                             {questionData.options.map((opti, index) => (
