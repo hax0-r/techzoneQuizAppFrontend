@@ -18,7 +18,7 @@ const Result = () => {
 
     return (
         <>
-            <div className="select-none">
+            <div className="pt-16">
                 <h1 className='text-blue pb-5 text-center'>Result's</h1>
                 <div className="leading-10 p-3 max-w-[40rem] m-auto">
                     <div className="flex pt-3 justify-between">
@@ -54,7 +54,7 @@ const Result = () => {
                     <div className='flex justify-center mt-12 items-center'>
                         <Link to={"/main"}>
                             <button className='bg-blue hover:bg-transparent active:mt-1 transition-all duration-200 border-2 border-blue px-7 hover:text-blue py-1 w-full text-white font-medium rounded-lg'>
-                                Back To Home
+                                Close
                             </button>
                         </Link>
                     </div>

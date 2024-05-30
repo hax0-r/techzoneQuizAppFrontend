@@ -4,20 +4,31 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   scroll-behavior: smooth;
   outline: none;
   font-family: poppins;
-  &::selection{
+
+  &::selection {
     background-color: #437cbe;
     color: #fff;
   }
 }
 
-h1{
+h1 {
   font-size: 2.3rem;
   font-weight: 800;
+}
+
+.Toastify__progress-bar--error,
+.Toastify__progress-bar--success {
+  background: #437cbe !important;
+}
+
+.Toastify__toast--error .Toastify__toast-icon svg,
+.Toastify__toast--success .Toastify__toast-icon svg {
+  fill: #437cbe;
 }

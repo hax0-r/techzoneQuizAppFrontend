@@ -68,6 +68,48 @@ const Quiz = () => {
     useEffect(() => {
     }, [currentQuestionIndex]);
 
+    useEffect(() => {
+        // Disable right-click context menu
+        const handleContextMenu = (e) => e.preventDefault();
+        document.addEventListener('contextmenu', handleContextMenu);
+
+        // Disable key shortcuts for developer tools
+        const handleKeyDown = (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J'))) {
+                e.preventDefault();
+            }
+        };
+        document.addEventListener('keydown', handleKeyDown);
+
+        // Finish quiz if the user changes the tab
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                calculateMarks();
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        // Prevent navigating away using back and forward buttons
+        const handleBeforeUnload = (e) => {
+            e.preventDefault();
+            e.returnValue = '';
+        };
+
+        window.history.pushState(null, null, window.location.href);
+        window.addEventListener('popstate', () => {
+            window.history.pushState(null, null, window.location.href);
+        });
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            document.removeEventListener('contextmenu', handleContextMenu);
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
+
     const progress = (QUIZ_DURATION - timeLeft) / QUIZ_DURATION * 100;
 
     return (
@@ -84,7 +126,7 @@ const Quiz = () => {
                 }}
                 transition={{ duration: 1 }}
             />
-            <div className="select-none max-w-[55rem] m-auto">
+            <div className="select-none max-w-[55rem] m-auto pt-16" style={{ userSelect: 'none' }}>
                 <div className="">
                     <h1 className='text-blue pb-5 text-center'>Quiz Application</h1>
 

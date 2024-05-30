@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MainContext } from '../Context/MainContext';
 import { errorNotify } from '../Components/Toastify';
+import Navbar from '../Components/Navbar';
 
 const Main = () => {
     const navigate = useNavigate();
@@ -12,12 +13,16 @@ const Main = () => {
             errorNotify("Enter Name and Id")
             return;
         }
-
-        navigate("/quiz");
+        if (idNumber === "123" || idNumber === "456" || idNumber === "789") {
+            navigate("/quiz");
+        } else {
+            errorNotify("Incorrect Id No")
+        }
     }
 
     return (
         <>
+            <Navbar />
             <div className="max-w-[75rem] m-auto pt-10">
                 <div className="flex justify-between items-center">
                     <div className="flex flex-col">

@@ -3,36 +3,35 @@ import { ToastContainer, toast } from 'react-toastify';
 
 const successNotify = (message) => toast.success(message, {
     position: "top-right",
-    autoClose: 5000,
+    autoClose: 3000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-    theme: "dark",
-    // transition: Bounce,
+    theme: "light",
 });
+
 const errorNotify = (message) => toast.error(message, {
     position: "top-right",
-    autoClose: 5000,
+    autoClose: 3000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-    theme: "dark",
-    // transition: Bounce,
+    theme: "light",
 });
 
 const defaultNotify = (message) => toast(message, {
     position: "top-right",
-    autoClose: 5000,
+    autoClose: 3000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-    theme: "dark",
+    theme: "light",
 });
 
 export {

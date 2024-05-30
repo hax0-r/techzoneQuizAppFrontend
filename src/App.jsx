@@ -4,12 +4,12 @@ import Router from './Router/Router';
 import { QuizProvider } from './Context/QuizContext';
 import { MainProvider } from './Context/MainContext';
 import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css"
 
 function App() {
   return (
     <MainProvider>
       <QuizProvider>
-        <Navbar />
         <Router />
         <ToastContainer
           position="top-right"
