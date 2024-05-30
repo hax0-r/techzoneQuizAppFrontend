@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MainContext } from '../Context/MainContext';
 import { errorNotify } from '../Components/Toastify';
@@ -31,11 +31,10 @@ const Main = () => {
                             <ul className='pl-5 leading-7 list-none'>
                                 <li>1. Each question must be answered within the allotted time.</li>
                                 <li>2. No external help or resources are allowed during the quiz.</li>
-                                <li>3. All answers must be submitted before moving on to the next question.</li>
-                                <li>4. Points will be awarded for each correct answer.</li>
-                                <li>5. The quiz must be completed in one sitting; you cannot pause or restart.</li>
-                                <li>6. Cheating will result in disqualification from the quiz.</li>
-                                <li>7. The decision of the quiz administrator is final and binding.</li>
+                                <li>3. Points will be awarded for each correct answer.</li>
+                                <li>4. The quiz must be completed in one sitting; you cannot pause or restart.</li>
+                                <li>5. Cheating will result in disqualification from the quiz.</li>
+                                <li>6. The decision of the quiz administrator is final and binding.</li>
                             </ul>
                         </div>
                     </div>

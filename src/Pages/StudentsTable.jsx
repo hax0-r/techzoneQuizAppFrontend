@@ -16,6 +16,12 @@ const StudentsTable = () => {
         setSearchQuery(event.target.value);
     };
 
+    const handleDelete = (index) => {
+        const updatedStudentsData = studentsData.filter((_, i) => i !== index);
+        setStudentsData(updatedStudentsData);
+        localStorage.setItem('studentsData', JSON.stringify(updatedStudentsData));
+    };
+
     const filteredStudentsData = studentsData.filter(student =>
         student.idNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
         student.userName.toLowerCase().includes(searchQuery.toLowerCase())
@@ -41,6 +47,7 @@ const StudentsTable = () => {
                         <span className='w-[20rem] overflow-hidden text-ellipsis'>Username</span>
                         <span className='w-[16rem] overflow-hidden text-center'>Earn Points</span>
                         <span className='w-[20rem] overflow-hidden text-center'>Result</span>
+                        <span className='w-[20rem] overflow-hidden text-center'>Delete</span>
                     </div>
                     {filteredStudentsData.map((student, index) => (
                         <React.Fragment key={index}>
@@ -49,6 +56,9 @@ const StudentsTable = () => {
                                 <span className='w-[20rem] overflow-hidden text-ellipsis'>{student.userName}</span>
                                 <span className='w-[16rem] overflow-hidden text-center'>{student.earnedPoints}</span>
                                 <span className='w-[20rem] overflow-hidden text-center'>{student.result}</span>
+                                <span className='w-[20rem] overflow-hidden text-center'>
+                                    <button className='bg-blue text-white py-[1.5px] px-3 hover:bg-transparent transition-all duration-200 active:scale-90 hover:text-blue border-2 border-blue rounded-md' onClick={() => handleDelete(index)}>Del</button>
+                                </span>
                             </div>
                             <div className="w-full h-[2px] bg-gray-100 rounded-3xl" />
                         </React.Fragment>

@@ -69,11 +69,9 @@ const Quiz = () => {
     }, [currentQuestionIndex]);
 
     useEffect(() => {
-        // Disable right-click context menu
         const handleContextMenu = (e) => e.preventDefault();
         document.addEventListener('contextmenu', handleContextMenu);
 
-        // Disable key shortcuts for developer tools
         const handleKeyDown = (e) => {
             if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J'))) {
                 e.preventDefault();
@@ -81,7 +79,6 @@ const Quiz = () => {
         };
         document.addEventListener('keydown', handleKeyDown);
 
-        // Finish quiz if the user changes the tab
         const handleVisibilityChange = () => {
             if (document.hidden) {
                 calculateMarks();
@@ -89,7 +86,6 @@ const Quiz = () => {
         };
         document.addEventListener('visibilitychange', handleVisibilityChange);
 
-        // Prevent navigating away using back and forward buttons
         const handleBeforeUnload = (e) => {
             e.preventDefault();
             e.returnValue = '';
