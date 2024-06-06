@@ -3,8 +3,8 @@ export default [
         id: 1,
         question: "CSS stands for ________",
         options: [
-            "Cascading Style Sheets",
             "Cascading Script Sheets",
+            "Cascading Style Sheets",
             "Colorful Style Sheets",
         ],
         correctOption: "Cascading Style Sheets"

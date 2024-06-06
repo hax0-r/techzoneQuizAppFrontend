@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import QUESTIONS from '../Data/QUESTIONS';
 import { QuizContext } from '../Context/QuizContext';
 import { motion } from 'framer-motion';
 
-const QUIZ_DURATION = 120;
 
 const Quiz = () => {
-    const { setQuizResult } = useContext(QuizContext);
+    const { questions, setQuizResult, timer } = useContext(QuizContext);
+    const QUIZ_DURATION = timer * 60;
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedOptions, setSelectedOptions] = useState({});
     const [timeLeft, setTimeLeft] = useState(QUIZ_DURATION);
-    const questionData = QUESTIONS[currentQuestionIndex];
     const navigate = useNavigate();
+
+    const questionData = questions[currentQuestionIndex];
 
     const onPrev = () => {
         if (currentQuestionIndex > 0) {
@@ -21,7 +21,7 @@ const Quiz = () => {
     };
 
     const onNext = () => {
-        if (currentQuestionIndex < QUESTIONS.length - 1) {
+        if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         } else {
             calculateMarks();
@@ -38,7 +38,7 @@ const Quiz = () => {
 
     const calculateMarks = () => {
         let marks = 0;
-        QUESTIONS.forEach((question, index) => {
+        questions.forEach((question, index) => {
             if (selectedOptions[index] === question.correctOption) {
                 marks += 1;
             }
@@ -46,7 +46,7 @@ const Quiz = () => {
         setQuizResult(prevResult => ({
             ...prevResult,
             earnedPoints: marks,
-            result: marks >= (QUESTIONS.length * 0.5) ? 'Passed' : 'Failed'
+            result: marks >= (questions.length * 0.5) ? 'Passed' : 'Failed'
         }));
         navigate('/result');
     };
@@ -126,32 +126,37 @@ const Quiz = () => {
                 <div className="">
                     <h1 className='text-blue pb-5 text-center'>Quiz Application</h1>
 
-                    <div>
-                        <div className="flex justify-between items-center">
-                            <div className="">
-                                <h2 className="pt-6 pb-4 text-sm text-zinc-400">{questionData.id} of {QUESTIONS.length} question</h2>
-                                <h2 className='font-medium max-w-[40rem] w-full text-xl pb-7'>{questionData.question}</h2>
+                    {questions.length > 0 ? (
+                        <div>
+                            <div className="flex justify-between items-center">
+                                <div className="">
+                                    <h2 className="pt-6 pb-4 text-sm text-zinc-400">{currentQuestionIndex + 1} of {questions.length} question</h2>
+                                    <h2 className='font-medium max-w-[40rem] w-full text-xl pb-7'>{questionData.question}</h2>
+                                </div>
+                                <div className={`p-4 rounded-full text-center ${timeLeft <= 10 ? 'bg-red-200' : 'bg-zinc-200'}`}>
+                                    {`${Math.floor(timeLeft / 60)}:${timeLeft % 60 < 10 ? '0' : ''}${timeLeft % 60}`}s
+                                </div>
                             </div>
-                            <div className={`p-4 rounded-full text-center ${timeLeft <= 10 ? 'bg-red-200' : 'bg-zinc-200'}`}>
-                                {`${Math.floor(timeLeft / 60)}:${timeLeft % 60 < 10 ? '0' : ''}${timeLeft % 60}`}s
-                            </div>
+                            <ul>
+                                {questionData.options && questionData.options.map((opti, index) => (
+                                    <li className='py-2 flex gap-2 cursor-pointer' key={index}>
+                                        <input
+                                            className=' cursor-pointer'
+                                            type="radio"
+                                            id={`option-${index}`}
+                                            name={`options-${currentQuestionIndex}`}
+                                            value={opti}
+                                            checked={selectedOptions[currentQuestionIndex] === opti}
+                                            onChange={onSelect}
+                                        />
+                                        <label className='cursor-pointer' htmlFor={`option-${index}`}>{opti}</label>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
-                        <ul>
-                            {questionData.options.map((opti, index) => (
-                                <li className='py-2 flex gap-2' key={index}>
-                                    <input
-                                        className='cursor-pointer'
-                                        type="radio"
-                                        name={`options-${currentQuestionIndex}`}
-                                        value={opti}
-                                        checked={selectedOptions[currentQuestionIndex] === opti}
-                                        onChange={onSelect}
-                                    />
-                                    <label>{opti}</label>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    ) : (
+                        <p className='text-center font-semibold text-[1.7rem] pt-7 text-zinc-300 select-none'>No questions available</p>
+                    )}
 
                     <div className="flex justify-between items-center">
                         <button
@@ -165,7 +170,7 @@ const Quiz = () => {
                             className={`bg-blue transition-all mt-10 duration-200 border-2 border-blue px-11 py-2 text-white font-medium rounded-lg hover:bg-transparent hover:text-blue `}
                             onClick={onNext}
                         >
-                            {currentQuestionIndex === QUESTIONS.length - 1 ? 'Finish' : 'Next'}
+                            {currentQuestionIndex === questions.length - 1 ? 'Finish' : 'Next'}
                         </button>
                     </div>
                 </div>

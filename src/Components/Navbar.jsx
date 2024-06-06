@@ -9,8 +9,8 @@ const Navbar = () => {
     return (
         <>
             <div className="flex py-2 justify-between items-center px-20">
-                <Link to={"/main"}>
-                    <img className='h-20' src="./assets/logo.jpg" alt="" />
+                <Link to={"/"}>
+                    <img className='h-20' src="./assets/logo.webp" alt="" />
                 </Link>
                 <div className="relative w-full flex justify-end">
 

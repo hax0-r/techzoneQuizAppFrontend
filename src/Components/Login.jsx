@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../Style/Login.css';
 import { useNavigate } from 'react-router-dom';
 import { errorNotify, successNotify } from './Toastify';
+import { IoCloseSharp } from 'react-icons/io5';
 
 const Login = ({ isLogin, setIsLogin }) => {
 
@@ -17,15 +18,16 @@ const Login = ({ isLogin, setIsLogin }) => {
         } else if (getLoginPassword === '123') {
             navigate('/studentstable');
             successNotify("Welcome to Student Table")
+            setIsLogin(!isLogin)
         } else {
             errorNotify("password is incorrect")
         }
-        setIsLogin(!isLogin)
     };
 
     return (
         <div className="">
-            <div className="form-container">
+            <div className="form-container z-20">
+                <IoCloseSharp onClick={() => setIsLogin(!isLogin)} className='absolute text-[2.5rem] top-2 right-2 opacity-70 hover:rotate-90 hover:opacity-100 transition-all cursor-pointer p-2' />
                 <div className="logo-container">Login</div>
                 <form className="form">
                     <div className="form-group">
