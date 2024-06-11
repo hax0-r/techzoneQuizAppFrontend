@@ -6,6 +6,7 @@ import Quiz from '../Pages/Quiz'
 import Result from '../Pages/Result'
 import StudentsTable from '../Pages/StudentsTable'
 import Dashboard from '../Pages/Dashboard'
+import DetailsResult from '../Pages/DetailsResult'
 
 const Router = () => {
   return (
@@ -17,6 +18,7 @@ const Router = () => {
         <Route path="/result" element={<Result />} />
         <Route path="/studentstable" element={<StudentsTable />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/detailsresult" element={<DetailsResult />} />
     </Routes>
     </>
   )

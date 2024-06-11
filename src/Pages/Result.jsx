@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { QuizContext } from '../Context/QuizContext';
 import { MainContext } from '../Context/MainContext';
+import DetailsResult from './DetailsResult';
 
 const Result = () => {
     const { quizResult } = useContext(QuizContext);
@@ -20,7 +21,7 @@ const Result = () => {
         <>
             <div className="pt-16">
                 <h1 className='text-blue pb-5 text-center'>Result's</h1>
-                <div className="leading-10 p-3 max-w-[40rem] m-auto">
+                <div className="leading-10 p-3 max-w-[75rem] px-10 m-auto">
                     <div className="flex pt-3 justify-between">
                         <span>Username </span>
                         <span>{userName} </span>
@@ -52,9 +53,9 @@ const Result = () => {
                     </div>
                     <hr />
                     <div className='flex justify-center mt-12 items-center'>
-                        <Link to={"/main"}>
+                        <Link to={"/detailsresult"}>
                             <button className='bg-blue hover:bg-transparent active:mt-1 transition-all duration-200 border-2 border-blue px-7 hover:text-blue py-1 w-full text-white font-medium rounded-lg'>
-                                Close
+                                Go To Result Details
                             </button>
                         </Link>
                     </div>

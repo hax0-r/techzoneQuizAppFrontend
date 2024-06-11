@@ -2,17 +2,33 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QuizContext } from '../Context/QuizContext';
 import { motion } from 'framer-motion';
-
+import axios from 'axios';
 
 const Quiz = () => {
-    const { questions, setQuizResult, timer } = useContext(QuizContext);
-    const QUIZ_DURATION = timer * 60;
+    const { questions, setQuestions, setQuizResult } = useContext(QuizContext);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedOptions, setSelectedOptions] = useState({});
+    const QUIZ_DURATION = 60;
     const [timeLeft, setTimeLeft] = useState(QUIZ_DURATION);
     const navigate = useNavigate();
 
-    const questionData = questions[currentQuestionIndex];
+    useEffect(() => {
+        fetchQuestions();
+    }, []);
+
+    const fetchQuestions = async () => {
+        try {
+            const res = await axios.get("http://localhost:3000/api/questions");
+            if (res.data.status) {
+                setQuestions(res.data.data);
+                console.log("fetch data",res.data.data.correctOption);
+            } else {
+                console.error("Failed to fetch questions:", res.data.message);
+            }
+        } catch (err) {
+            console.error("Failed to fetch questions:", err);
+        }
+    };
 
     const onPrev = () => {
         if (currentQuestionIndex > 0) {
@@ -34,20 +50,39 @@ const Quiz = () => {
             ...selectedOptions,
             [currentQuestionIndex]: option
         });
+        console.log("Selected options: ", selectedOptions);
     };
 
     const calculateMarks = () => {
         let marks = 0;
-        questions.forEach((question, index) => {
-            if (selectedOptions[index] === question.correctOption) {
+        const detailedResults = questions.map((question, index) => {
+            const userAnswer = selectedOptions[index];
+            const isCorrect = userAnswer === question.correctOption;
+            if (isCorrect) {
                 marks += 1;
+                console.log("Marks:- ", marks);
             }
+            console.log("UnMarks:- ", marks);
+            return {
+                question: question.question,
+                correctOption: question.correctOption,
+                userAnswer,
+                isCorrect
+            };
         });
-        setQuizResult(prevResult => ({
-            ...prevResult,
+        console.log('Detailed Results:', detailedResults);
+
+        const result = {
+            totalPoints: questions.length,
+            totalQuestions: questions.length,
             earnedPoints: marks,
-            result: marks >= (questions.length * 0.5) ? 'Passed' : 'Failed'
-        }));
+            result: marks >= (questions.length * 0.5) ? 'Passed' : 'Failed',
+            detailedResults
+        };
+
+        console.log("Quiz Result: ", result);
+
+        setQuizResult(result);
         navigate('/result');
     };
 
@@ -66,45 +101,12 @@ const Quiz = () => {
     }, [timeLeft]);
 
     useEffect(() => {
+        // Log current question for debugging
+        console.log("Current Question Index: ", currentQuestionIndex);
+        if (questions[currentQuestionIndex]) {
+            console.log("Current Question: ", questions[currentQuestionIndex]);
+        }
     }, [currentQuestionIndex]);
-
-    useEffect(() => {
-        const handleContextMenu = (e) => e.preventDefault();
-        document.addEventListener('contextmenu', handleContextMenu);
-
-        const handleKeyDown = (e) => {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J'))) {
-                e.preventDefault();
-            }
-        };
-        document.addEventListener('keydown', handleKeyDown);
-
-        const handleVisibilityChange = () => {
-            if (document.hidden) {
-                calculateMarks();
-            }
-        };
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-
-        const handleBeforeUnload = (e) => {
-            e.preventDefault();
-            e.returnValue = '';
-        };
-
-        window.history.pushState(null, null, window.location.href);
-        window.addEventListener('popstate', () => {
-            window.history.pushState(null, null, window.location.href);
-        });
-
-        window.addEventListener('beforeunload', handleBeforeUnload);
-
-        return () => {
-            document.removeEventListener('contextmenu', handleContextMenu);
-            document.removeEventListener('keydown', handleKeyDown);
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-        };
-    }, []);
 
     const progress = (QUIZ_DURATION - timeLeft) / QUIZ_DURATION * 100;
 
@@ -131,25 +133,25 @@ const Quiz = () => {
                             <div className="flex justify-between items-center">
                                 <div className="">
                                     <h2 className="pt-6 pb-4 text-sm text-zinc-400">{currentQuestionIndex + 1} of {questions.length} question</h2>
-                                    <h2 className='font-medium max-w-[40rem] w-full text-xl pb-7'>{questionData.question}</h2>
+                                    <h2 className='font-medium max-w-[40rem] w-full text-xl pb-7'>{questions[currentQuestionIndex].question}</h2>
                                 </div>
                                 <div className={`p-4 rounded-full text-center ${timeLeft <= 10 ? 'bg-red-200' : 'bg-zinc-200'}`}>
                                     {`${Math.floor(timeLeft / 60)}:${timeLeft % 60 < 10 ? '0' : ''}${timeLeft % 60}`}s
                                 </div>
                             </div>
                             <ul>
-                                {questionData.options && questionData.options.map((opti, index) => (
+                                {[questions[currentQuestionIndex].option1, questions[currentQuestionIndex].option2, questions[currentQuestionIndex].option3, questions[currentQuestionIndex].option4].map((option, index) => (
                                     <li className='py-2 flex gap-2 cursor-pointer' key={index}>
                                         <input
-                                            className=' cursor-pointer'
+                                            className='cursor-pointer'
                                             type="radio"
                                             id={`option-${index}`}
                                             name={`options-${currentQuestionIndex}`}
-                                            value={opti}
-                                            checked={selectedOptions[currentQuestionIndex] === opti}
+                                            value={option}
+                                            checked={selectedOptions[currentQuestionIndex] === option}
                                             onChange={onSelect}
                                         />
-                                        <label className='cursor-pointer' htmlFor={`option-${index}`}>{opti}</label>
+                                        <label className='cursor-pointer' htmlFor={`option-${index}`}>{option}</label>
                                     </li>
                                 ))}
                             </ul>
